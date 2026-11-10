@@ -1,0 +1,36 @@
+{
+  "formation": "4-2-3-1",
+  "max_age": 26,
+  "max_value_m": 45,
+  "min_pos_rating": 15,
+  "per_slot": 5,
+  "pool_per_slot": 40,
+  "nation_bonus": 8,
+  "strict_nationality": false,
+  "preferred_nations": {
+    "162": "Portugal",
+    "189": "Brazil",
+    "1": "Angola",
+    "7": "Cape Verde",
+    "18": "Guinea-Bissau",
+    "30": "Mozambique",
+    "187": "Argentina",
+    "188": "Bolivia",
+    "190": "Chile",
+    "191": "Colombia",
+    "192": "Ecuador",
+    "193": "Paraguay",
+    "194": "Peru",
+    "195": "Uruguay",
+    "196": "Venezuela",
+    "109": "Mexico",
+    "99": "Costa Rica",
+    "112": "Panama"
+  },
+  "extra_nation_codes": {
+    "170": "ES",
+    "150": "IT"
+  },
+  "club_name_match": "FC Porto",
+  "max_ca_drop": 12
+}

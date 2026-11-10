@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recruitment Board</title>
+<style>
+:root{
+  --bg:#0a0f1f; --bg2:#0e1529; --panel:#121a31; --panel2:#18223f; --line:#212d52; --text:#e8edff; --muted:#8c98c0;
+  --accent:#4d8dff; --accent2:#7aa9ff; --gold:#f4c24f; --green:#35d39d; --red:#ff6a82; --amber:#ffb454; --violet:#a78bfa;
+  --pitch1:#14573a; --pitch2:#176a45; --shadow:0 10px 30px rgba(0,0,0,.35); --r:16px;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#eef2fb; --bg2:#e6ecf9; --panel:#ffffff; --panel2:#f3f6fd; --line:#dbe3f5; --text:#14203f; --muted:#5f6c92;
+    --accent:#2f6df0; --accent2:#2f6df0; --gold:#c98a00; --green:#0f9d6e; --red:#d62f4f; --amber:#c87500; --violet:#6d4fe0;
+    --shadow:0 8px 24px rgba(30,50,110,.10);
+  }
+}
+:root[data-theme="light"]{
+  --bg:#eef2fb; --bg2:#e6ecf9; --panel:#ffffff; --panel2:#f3f6fd; --line:#dbe3f5; --text:#14203f; --muted:#5f6c92;
+  --accent:#2f6df0; --accent2:#2f6df0; --gold:#c98a00; --green:#0f9d6e; --red:#d62f4f; --amber:#c87500; --violet:#6d4fe0;
+  --shadow:0 8px 24px rgba(30,50,110,.10);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(1200px 600px at 10% -10%, color-mix(in srgb,var(--accent) 14%,transparent), transparent 60%),var(--bg);
+  color:var(--text);font-family:Inter,"Segoe UI Variable","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;font-size:14px;line-height:1.4;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+.num{font-variant-numeric:tabular-nums}
+body.money .attr-only{display:none !important}
+body:not(.money) .money-only{display:none !important}
+
+.top{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--bg2);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),#2347b8);display:grid;place-items:center;font-weight:800;color:#fff;box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 45%,transparent)}
+.brand h1{font-size:16px;margin:0;font-weight:700}
+.brand p{margin:0;color:var(--muted);font-size:12px}
+.seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.seg button{background:none;border:0;padding:8px 16px;border-radius:9px;font-weight:700;font-size:13px;color:var(--muted)}
+.seg button.on{background:var(--accent);color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 40%,transparent)}
+.stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:7px 12px;min-width:100px}
+.stat b{display:block;font-size:15px}
+.stat span{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.themebtn{background:var(--panel);border:1px solid var(--line);border-radius:12px;width:40px;height:40px;display:grid;place-items:center}
+
+.shell{display:grid;grid-template-columns:270px minmax(380px,460px) 1fr;gap:18px;padding:18px 24px 40px;max-width:1700px;margin:0 auto}
+@media (max-width:1250px){.shell{grid-template-columns:260px 1fr}.detail{grid-column:1 / -1}}
+@media (max-width:820px){.shell{grid-template-columns:1fr;padding:14px 16px 40px}.top{padding:12px 16px}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.panel-title{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 12px;font-weight:700}
+
+.filters{padding:18px;align-self:start}
+.f{margin-bottom:16px}
+.f label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.f label b{color:var(--text)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:13px}
+.sw small{display:block;color:var(--muted);font-size:11.5px;margin-top:1px}
+.toggle{position:relative;width:38px;height:22px;flex:none}
+.toggle input{opacity:0;position:absolute;inset:0;cursor:pointer;margin:0;z-index:2}
+.toggle i{position:absolute;inset:0;background:var(--line);border-radius:99px;transition:.2s}
+.toggle i::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.2s}
+.toggle input:checked + i{background:var(--accent)}
+.toggle input:checked + i::after{transform:translateX(16px)}
+.natlist{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.pref{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 45%,var(--line));background:color-mix(in srgb,var(--gold) 10%,transparent)}
+.tag.good{color:var(--green);border-color:color-mix(in srgb,var(--green) 40%,var(--line));background:color-mix(in srgb,var(--green) 10%,transparent)}
+.tag.bad{color:var(--red);border-color:color-mix(in srgb,var(--red) 40%,var(--line));background:color-mix(in srgb,var(--red) 10%,transparent)}
+.tag.warn{color:var(--amber);border-color:color-mix(in srgb,var(--amber) 40%,var(--line));background:color-mix(in srgb,var(--amber) 10%,transparent)}
+.tag.vio{color:var(--violet);border-color:color-mix(in srgb,var(--violet) 40%,var(--line));background:color-mix(in srgb,var(--violet) 10%,transparent)}
+.reset{width:100%;margin-top:10px;background:transparent;border:1px dashed var(--line);border-radius:10px;padding:8px;color:var(--muted)}
+.reset:hover{color:var(--text);border-color:var(--accent)}
+
+.pitchcol{display:flex;flex-direction:column;gap:12px;align-self:start}
+.pitchcard{padding:14px}
+.pitch{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:repeating-linear-gradient(0deg,var(--pitch1) 0 9.09%,var(--pitch2) 9.09% 18.18%);border:1px solid #0d3a27}
+.pitch .ln{position:absolute;border:2px solid rgba(255,255,255,.28);pointer-events:none}
+.ln.box1{left:22%;right:22%;top:0;height:16%;border-top:0}
+.ln.box2{left:22%;right:22%;bottom:0;height:16%;border-bottom:0}
+.ln.six1{left:36%;right:36%;top:0;height:6%;border-top:0}
+.ln.six2{left:36%;right:36%;bottom:0;height:6%;border-bottom:0}
+.ln.mid{left:0;right:0;top:50%;border-width:2px 0 0}
+.ln.circ{left:50%;top:50%;width:26%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%}
+.node{position:absolute;transform:translate(-50%,-50%);width:92px;background:none;border:0;padding:0;text-align:center;z-index:2}
+.node .chip{position:relative;margin:0 auto;width:50px;height:50px;border-radius:50%;background:rgba(8,14,30,.78);border:2px solid rgba(255,255,255,.55);display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.4);transition:.15s}
+.node:hover .chip{transform:scale(1.08)}
+.node.sel .chip{border-color:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 30%,transparent),0 6px 14px rgba(0,0,0,.4)}
+.node .pos{position:absolute;left:-6px;top:-6px;background:var(--accent);color:#fff;font-size:9.5px;font-weight:800;padding:1px 5px;border-radius:7px}
+.node .up{position:absolute;right:-8px;top:-8px;min-width:20px;height:20px;border-radius:10px;background:var(--green);color:#04281c;font-size:10.5px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+.node .up.none{background:rgba(255,255,255,.25);color:#fff}
+.node .nm{margin-top:5px;font-size:11.5px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.node .sub{font-size:10px;color:rgba(255,255,255,.8);text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted);padding:2px 4px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.basis{font-size:11.5px;color:var(--muted);padding:2px 4px}
+
+.detail{display:flex;flex-direction:column;gap:14px;min-width:0}
+.banner{padding:12px 16px;border-radius:12px;border:1px solid color-mix(in srgb,var(--amber) 40%,var(--line));background:color-mix(in srgb,var(--amber) 9%,transparent);color:var(--text);font-size:13px}
+.banner b{color:var(--amber)}
+.current{padding:20px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
+@media (max-width:700px){.current{grid-template-columns:1fr}}
+.avatar{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#223166,#162044);display:grid;place-items:center;font-size:22px;font-weight:800;color:var(--accent2);border:1px solid var(--line)}
+.current h2{margin:0;font-size:22px;letter-spacing:-.01em}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:7px}
+.rate{display:flex;gap:18px}
+.dial{text-align:center}
+.dial b{display:block;font-size:26px;line-height:1}
+.dial span{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.rolebar{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:700px){.rolebar{grid-template-columns:1fr}}
+.rolebar label{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:6px}
+.rolebar label b{color:var(--text);font-size:13px;letter-spacing:0;text-transform:none}
+.cands-head{display:flex;align-items:baseline;justify-content:space-between;padding:0 4px;gap:10px;flex-wrap:wrap}
+.cands-head h3{margin:0;font-size:15px}
+.cands-head span{color:var(--muted);font-size:12px}
+.cand{padding:0;overflow:hidden;transition:border-color .15s}
+.cand:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+.cand-main{display:grid;grid-template-columns:34px minmax(180px,1.3fr) minmax(150px,1fr) minmax(120px,.8fr) 64px;gap:16px;align-items:center;padding:14px 16px;cursor:pointer;width:100%;background:none;border:0;text-align:left}
+@media (max-width:1100px){.cand-main{grid-template-columns:30px 1fr 64px}.cand-main .ratings,.cand-main .money{grid-column:2 / -1}}
+.rank{width:30px;height:30px;border-radius:10px;background:var(--panel2);display:grid;place-items:center;font-weight:800;color:var(--muted)}
+.cand.r1 .rank{background:linear-gradient(135deg,var(--gold),#d99a1a);color:#2a1d00}
+.pname{font-weight:700;font-size:15px}
+.pmeta{color:var(--muted);font-size:12px;margin-top:2px}
+.bars{display:grid;gap:7px}
+.bar{display:grid;grid-template-columns:22px 1fr 54px;gap:8px;align-items:center;font-size:11.5px;color:var(--muted)}
+.track{height:7px;border-radius:99px;background:var(--line);overflow:hidden}
+.fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.fill.pa{background:linear-gradient(90deg,#8a63ff,#b79bff)}
+.bar em{font-style:normal;color:var(--text);font-weight:700;text-align:right}
+.bar em small{font-weight:700;margin-left:3px}
+.d-up{color:var(--green)}.d-dn{color:var(--red)}.d-eq{color:var(--muted)}
+.money b{display:block;font-size:15px}
+.money span{color:var(--muted);font-size:12px;display:block}
+.ring{--p:50;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c,var(--accent)) calc(var(--p)*1%),var(--line) 0)}
+.ring i{width:44px;height:44px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:14px}
+.cand-foot{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 14px 66px}
+.expand{display:none;border-top:1px solid var(--line);padding:16px;background:var(--panel2)}
+.cand.open .expand{display:block}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 22px}
+.a{display:grid;grid-template-columns:1fr 28px 12px 28px 34px;align-items:center;gap:4px;font-size:12px;padding:3px 0;border-bottom:1px dashed color-mix(in srgb,var(--line) 70%,transparent)}
+.a span{color:var(--muted)}
+.a b{text-align:right}
+.a .arrow{color:var(--muted);text-align:center;font-size:10px}
+.a .dd{text-align:right;font-weight:700}
+.stars{--v:3;display:inline-block;font-size:15px;letter-spacing:2px;line-height:1;background:linear-gradient(90deg,var(--gold) calc(var(--v) / 5 * 100%),var(--line) 0);-webkit-background-clip:text;background-clip:text;color:transparent;vertical-align:middle}
+.stars.pot{background:linear-gradient(90deg,var(--violet) calc(var(--v) / 5 * 100%),var(--line) 0);-webkit-background-clip:text;background-clip:text}
+.starrow{display:grid;grid-template-columns:20px auto 40px;gap:8px;align-items:center;font-size:11.5px;color:var(--muted)}
+.starrow em{font-style:normal;color:var(--text);font-weight:700;text-align:right}
+.stgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px 24px}
+.st{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:12px;align-items:center}
+.st .nm{color:var(--muted)}
+.st .vals b{font-variant-numeric:tabular-nums}
+.st .pbar{grid-column:1 / -1;height:5px;border-radius:99px;background:var(--line);overflow:hidden}
+.st .pbar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+.section{padding:18px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.07em;font-weight:700;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:8px;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+tr:last-child td{border-bottom:0}
+.benchwrap{grid-column:1 / -1}
+.foot{text-align:center;color:var(--muted);font-size:11.5px;padding:0 0 30px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><div class="logo" id="logo">FC</div>
+    <div><h1>Recruitment Board</h1><p id="sub"></p></div></div>
+  <div class="seg" id="seg"><button data-m="attr">Attributes</button><button data-m="money">Moneyball</button></div>
+  <div class="stats" id="stats"></div>
+  <button class="themebtn" id="theme" title="Toggle theme" aria-label="Toggle theme">◐</button>
+</header>
+
+<div class="shell">
+  <aside class="card filters">
+    <h2 class="panel-title">Preferences</h2>
+    <div class="f"><label>Max age <b id="v-age" class="num"></b></label><input type="range" id="age" min="18" max="32" step="1"></div>
+    <div class="f"><label>Max value <b id="v-val" class="num"></b></label><input type="range" id="val" min="1" max="100" step="1"></div>
+    <div class="f attr-only"><label>Min potential (PA) <b id="v-pa" class="num"></b></label><input type="range" id="pa" min="0" max="190" step="5"></div>
+    <div class="f money-only"><label>Min potential stars <b id="v-psr" class="num"></b></label><input type="range" id="psr" min="0" max="5" step="0.5"></div>
+    <div class="f attr-only"><label>Out-of-possession weight <b id="v-oop" class="num"></b></label><input type="range" id="oop" min="0" max="100" step="5"></div>
+    <div class="f"><label>Sort by</label><select id="sort"></select></div>
+    <div class="sw"><div>Prefer my nationalities<small id="natsmall"></small></div><label class="toggle"><input type="checkbox" id="bonus"><i></i></label></div>
+    <div class="sw"><div>Only those nationalities<small>Hard filter</small></div><label class="toggle"><input type="checkbox" id="strict"><i></i></label></div>
+    <div class="sw"><div>Within my balance<small id="balsmall"></small></div><label class="toggle"><input type="checkbox" id="afford"><i></i></label></div>
+    <div class="sw"><div>Contract ends within a year<small>Cheaper / free targets</small></div><label class="toggle"><input type="checkbox" id="expiring"><i></i></label></div>
+    <div class="sw money-only"><div>Only players with stats<small>Hide stars-only guesses</small></div><label class="toggle"><input type="checkbox" id="onlystats"><i></i></label></div>
+    <div class="natlist" id="natlist"></div>
+    <button class="reset" id="reset">Reset to my defaults</button>
+  </aside>
+
+  <section class="pitchcol">
+    <div class="card pitchcard">
+      <h2 class="panel-title" id="pitchtitle"></h2>
+      <div class="pitch" id="pitch">
+        <div class="ln box1"></div><div class="ln box2"></div><div class="ln six1"></div><div class="ln six2"></div>
+        <div class="ln mid"></div><div class="ln circ"></div>
+      </div>
+    </div>
+    <div class="legend"><span><i style="background:var(--green)"></i>better options available</span><span><i style="background:rgba(255,255,255,.4)"></i>none match filters</span></div>
+    <div class="basis" id="basis"></div>
+  </section>
+
+  <section class="detail" id="detail"></section>
+
+  <section class="card section benchwrap"><h2 class="panel-title">Rest of the first team</h2><div id="bench" style="overflow:auto"></div></section>
+</div>
+<div class="foot" id="foot"></div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const P = D.prefs, M = D.meta;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = v => v == null ? '—' : v < 1 ? '€' + Math.round(v * 1000) + 'K' : '€' + v.toFixed(v >= 10 ? 0 : 1) + 'M';
+const wage = v => v == null ? '—' : '€' + Math.round(v) + 'K/w';
+const lastName = n => { const p = n.split(' '); return p.length > 1 ? p.slice(1).join(' ') : n; };
+const nice = a => a.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+const initials = n => n.split(' ').slice(0, 2).map(x => x[0]).join('');
+const clip01 = x => Math.max(0, Math.min(1, x));
+const endDate = (M.date && !isNaN(new Date(M.date))) ? new Date(M.date) : new Date();
+const oneYear = new Date(endDate.getTime() + 365 * 864e5);
+const stars = (v, cls = '') => `<span class="stars ${cls}" style="--v:${v}" title="${v} stars">★★★★★</span>`;
+
+const DEFAULTS = {slot: 0, mode: D.mode === 'moneyball' ? 'money' : 'attr', age: P.max_age, val: P.max_value, pa: 0, psr: 0, sort: 'fit',
+  bonus: true, strict: P.strict, afford: false, expiring: false, onlystats: false, oop: Math.round(P.oop_weight * 100), roles: {}};
+let S = JSON.parse(JSON.stringify(DEFAULTS));
+try { Object.assign(S, JSON.parse(localStorage.getItem('fm27board2') || '{}'), {slot: 0}); } catch (e) {}
+const save = () => { try { localStorage.setItem('fm27board2', JSON.stringify(S)); } catch (e) {} };
+const open = new Set();
+const isMoney = () => S.mode === 'money';
+
+/* ---------- role fit (attributes mode) ---------- */
+function roleOf(s) { const r = S.roles[s.i] || {}; return {ip: r.ip || s.roles.ip, oop: r.oop || s.roles.oop}; }
+function fitOf(attrs, names, role, phase) {
+  const w = (D.roles[phase] || {})[role]; if (!w) return 50;
+  let n = 0, d = 0; names.forEach((a, k) => { const x = w[a]; if (x) { n += x * attrs[k]; d += x; } });
+  return d ? 100 * n / (20 * d) : 50;
+}
+function combFit(attrs, s, roles) {
+  const k = S.oop / 100;
+  return (1 - k) * fitOf(attrs, s.attr_names, roles.ip, 'ip') + k * fitOf(attrs, s.attr_names, roles.oop, 'oop');
+}
+
+/* ---------- ranking ---------- */
+function score(s, c, roles) {
+  const bonus = S.bonus && c.pref ? P.nation_bonus : 0;
+  if (isMoney()) return c.mbase + bonus;
+  const n = clip01((combFit(c.attrs, s, roles) - 50) / 35);
+  return 0.25 * c.match + 25 * n + c.rest + bonus;
+}
+function rank(s) {
+  const roles = roleOf(s);
+  let c = isMoney() ? s.mcands : s.cands;
+  c = c.filter(x => x.age <= S.age && (x.value ?? 0) <= S.val && (isMoney() ? x.sp >= S.psr : x.pa >= S.pa));
+  if (S.strict) c = c.filter(x => x.pref);
+  if (S.afford) c = c.filter(x => (x.value ?? 0) <= M.balance);
+  if (S.expiring) c = c.filter(x => x.end && new Date(x.end) <= oneYear);
+  if (isMoney() && S.onlystats) c = c.filter(x => x.has);
+  const sc = x => score(s, x, roles);
+  const sorters = {
+    fit: (a, b) => sc(b) - sc(a),
+    ca: (a, b) => b.ca - a.ca || sc(b) - sc(a), pa: (a, b) => b.pa - a.pa || sc(b) - sc(a),
+    prod: (a, b) => (b.prod ?? -1) - (a.prod ?? -1) || sc(b) - sc(a),
+    stars: (a, b) => b.sp - a.sp || b.sc - a.sc || sc(b) - sc(a),
+    value: (a, b) => (a.value ?? 1e9) - (b.value ?? 1e9), age: (a, b) => a.age - b.age || sc(b) - sc(a)};
+  return c.sort(sorters[S.sort] || sorters.fit).slice(0, P.per_slot);
+}
+const delta = (a, b, f = 0) => { const d = +(a - b).toFixed(f); return d > 0 ? `<small class="d-up">+${d}</small>` : d < 0 ? `<small class="d-dn">${d}</small>` : `<small class="d-eq">±0</small>`; };
+const better = (s, c) => isMoney() ? ((c.prod != null && s.player.prod != null) ? c.prod > s.player.prod : c.sc >= s.player.sc) : c.ca >= s.player.ca;
+
+/* ---------- render ---------- */
+function renderTop() {
+  $('#logo').textContent = M.club.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase();
+  $('#sub').textContent = `${M.club} · ${M.manager} · ${M.formation}`;
+  $('#stats').innerHTML = [['In-game date', M.date || '—'], ['Balance', money(M.balance)], ['Scouting left', '€' + M.scouting + 'K'], ['Exported', M.generated]]
+    .map(([k, v]) => `<div class="stat"><b class="num">${esc(v)}</b><span>${k}</span></div>`).join('');
+  $('#foot').textContent = `Source: ${M.save} · read with fmsave · stars are derived from CA/PA (CA ÷ 40) · attributes are the in-game 1–20 values, CA/PA the hidden 1–200 ratings`;
+}
+function renderSort() {
+  const opts = isMoney()
+    ? [['fit', 'Best overall (production + stars + price)'], ['prod', 'Production (stats)'], ['stars', 'Potential stars'], ['value', 'Lowest value'], ['age', 'Youngest']]
+    : [['fit', 'Best fit (profile + role + CA + PA + age)'], ['ca', 'Current ability'], ['pa', 'Potential'], ['value', 'Lowest value'], ['age', 'Youngest']];
+  if (!opts.some(o => o[0] === S.sort)) S.sort = 'fit';
+  $('#sort').innerHTML = opts.map(o => `<option value="${o[0]}">${o[1]}</option>`).join(''); $('#sort').value = S.sort;
+}
+function renderFilters() {
+  document.body.classList.toggle('money', isMoney());
+  document.querySelectorAll('#seg button').forEach(b => b.classList.toggle('on', b.dataset.m === S.mode));
+  renderSort();
+  $('#age').value = S.age; $('#val').value = S.val; $('#pa').value = S.pa; $('#psr').value = S.psr; $('#oop').value = S.oop;
+  $('#bonus').checked = S.bonus; $('#strict').checked = S.strict; $('#afford').checked = S.afford; $('#expiring').checked = S.expiring; $('#onlystats').checked = S.onlystats;
+  $('#v-age').textContent = '≤ ' + S.age; $('#v-val').textContent = '≤ ' + money(+S.val); $('#v-pa').textContent = S.pa ? '≥ ' + S.pa : 'any';
+  $('#v-psr').textContent = S.psr ? '≥ ' + S.psr + '★' : 'any'; $('#v-oop').textContent = `${S.oop}% OOP / ${100 - S.oop}% IP`;
+  $('#natsmall').textContent = `+${P.nation_bonus} pts in ranking`; $('#balsmall').textContent = 'Value ≤ ' + money(M.balance);
+  $('#natlist').innerHTML = P.pref_nations.map(n => `<span class="tag pref">★ ${esc(n)}</span>`).join('');
+  $('#basis').textContent = 'Starting XI basis: ' + M.xi_basis + (isMoney() ? ' · Moneyball: ' + M.money_note : '');
+}
+function renderPitch() {
+  $('#pitchtitle').textContent = `Starting XI · ${M.formation}`;
+  const el = $('#pitch'); el.querySelectorAll('.node').forEach(n => n.remove());
+  D.slots.forEach(s => {
+    const ups = rank(s).filter(c => better(s, c)).length;
+    const b = document.createElement('button'); b.className = 'node' + (s.i === S.slot ? ' sel' : '');
+    b.style.left = s.x + '%'; b.style.top = s.y + '%';
+    const big = isMoney() ? s.player.sc.toFixed(1) : s.player.ca;
+    b.innerHTML = `<div class="chip num"><span class="pos">${esc(s.short)}</span>${big}<span class="up ${ups ? '' : 'none'}">${ups ? ups + '↑' : '–'}</span></div>
+      <div class="nm">${esc(lastName(s.player.name))}</div><div class="sub">${s.player.age}y · ${s.player.nat}</div>`;
+    b.onclick = () => { S.slot = s.i; renderPitch(); renderDetail(); };
+    el.appendChild(b);
+  });
+}
+function natTag(c) { return `<span class="tag ${c.pref ? 'pref' : ''}" title="${esc(c.nat_name)}">${c.pref ? '★ ' : ''}${esc(c.nat)}</span>`; }
+function contractTag(p) {
+  if (!p.end) return '';
+  const yrs = (new Date(p.end) - endDate) / (365 * 864e5);
+  return `<span class="tag ${yrs <= 1 ? 'warn' : ''}">${yrs <= 1 ? '⏳ ' : ''}to ${p.end.slice(0, 7)}</span>`;
+}
+function roleSelect(id, phase, current, s) {
+  const names = Object.keys(D.roles[phase]);
+  return `<select data-phase="${phase}" data-slot="${s.i}">${names.map(n => `<option ${n === current ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select>`;
+}
+function statTags(s, c) {
+  const tags = [];
+  c.stats.forEach((st, k) => {
+    const [v, pct] = st; if (v == null || pct == null) return;
+    const m = s.metrics[k]; if (m.k === 'rating') return;
+    if (pct >= 80) tags.push([pct, `<span class="tag good">${esc(m.label)} ${m.fmt.replace(/\{:(\+?)\.(\d)f\}/, (_, p, d) => (p && v > 0 ? '+' : '') + v.toFixed(+d))} · P${pct}</span>`]);
+    else if (pct <= 25) tags.push([100 - pct, `<span class="tag bad">${esc(m.label)} · P${pct}</span>`]);
+  });
+  return tags.sort((a, b) => b[0] - a[0]).slice(0, 4).map(t => t[1]).join('');
+}
+const fmtStat = (m, v) => v == null ? '—' : m.fmt.replace(/\{:(\+?)\.(\d)f\}/, (_, p, d) => (p && v > 0 ? '+' : '') + v.toFixed(+d));
+
+function renderDetail() {
+  const s = D.slots[S.slot], p = s.player, list = rank(s), roles = roleOf(s);
+  const flags = [];
+  if (p.age >= 30) flags.push('<span class="tag warn">Ageing</span>');
+  if (p.end && new Date(p.end) <= oneYear) flags.push('<span class="tag warn">Contract expiring</span>');
+  const also = {};
+  D.slots.forEach(o => { if (o.i !== s.i) rank(o).forEach(c => { (also[c.uid] = also[c.uid] || []).push(o.label); }); });
+  const best = list[0];
+  if (best) {
+    if (isMoney()) { if (best.prod != null && p.prod != null && best.prod > p.prod + 8) flags.push('<span class="tag bad">Clear production upgrade available</span>'); }
+    else if (best.ca > p.ca + 4) flags.push('<span class="tag bad">Clear upgrade available</span>');
+    else if (best.ca >= p.ca) flags.push('<span class="tag good">Like-for-like options</span>');
+  }
+  let h = '';
+  if (isMoney() && !s.use_stats) h += `<div class="banner"><b>Not enough stats for this position yet.</b> ${esc(M.money_note)}. Until minutes build up, candidates are ranked by stars, age and price only; production percentiles appear automatically once players have 300+ minutes.</div>`;
+
+  const dials = isMoney()
+    ? `<div class="dial"><b>${stars(p.sc)}</b><span>Now ${p.sc.toFixed(1)}★</span></div><div class="dial"><b>${stars(p.sp, 'pot')}</b><span>Potential ${p.sp.toFixed(1)}★</span></div>
+       <div class="dial"><b class="num">${p.prod == null ? '—' : Math.round(p.prod)}</b><span>Production</span></div>`
+    : `<div class="dial"><b class="num">${p.ca}</b><span>CA</span></div><div class="dial"><b class="num" style="color:#b79bff">${p.pa}</b><span>PA</span></div>`;
+  h += `<div class="card current"><div class="avatar">${esc(initials(p.name))}</div>
+      <div><div style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:700">${esc(s.label)} · starter</div>
+        <h2>${esc(p.name)}</h2>
+        <div class="row">${natTag(p)}<span class="tag">${p.age} yrs</span><span class="tag">${esc(p.pos)}</span>${contractTag(p)}<span class="tag">${money(p.value)} · ${wage(p.wage)}</span>${isMoney() && p.mins ? `<span class="tag vio">${p.mins} min played</span>` : ''}${flags.join('')}</div></div>
+      <div class="rate">${dials}</div></div>`;
+
+  if (!isMoney()) {
+    const ipf = fitOf(p.attrs, s.attr_names, roles.ip, 'ip'), oopf = fitOf(p.attrs, s.attr_names, roles.oop, 'oop');
+    h += `<div class="card rolebar">
+      <div><label>In possession <b class="num">${Math.round(ipf)} fit</b></label>${roleSelect('ip', 'ip', roles.ip, s)}</div>
+      <div><label>Out of possession <b class="num">${Math.round(oopf)} fit</b></label>${roleSelect('oop', 'oop', roles.oop, s)}</div></div>`;
+  }
+  h += `<div class="cands-head"><h3>Top ${P.per_slot} replacements — ${esc(s.label)}</h3><span>${list.length} match your filters · ${esc($('#sort').selectedOptions[0].text.split(' (')[0].toLowerCase())}</span></div>`;
+  if (!list.length) h += `<div class="card empty">No candidates match the current filters. Loosen age, value, potential or nationality.</div>`;
+
+  list.forEach((c, i) => {
+    const sc = Math.round(score(s, c, roles));
+    const mcls = (c.value ?? 0) <= M.balance ? 'good' : 'warn';
+    const moneyCol = `<div class="money"><b class="num">${money(c.value)}</b><span>${wage(c.wage)}</span><span class="tag ${mcls}" style="margin-top:5px">${(c.value ?? 0) <= M.balance ? 'Affordable' : 'Over balance'}</span></div>`;
+    const alsoTag = also[c.uid] ? `<span class="tag warn" title="Also in the top ${P.per_slot} for these positions">Also fits ${[...new Set(also[c.uid])].join(' · ')}</span>` : '';
+    let mid, ringV, ringTitle, foot, expand;
+    if (isMoney()) {
+      mid = `<div class="bars ratings">
+          <div class="starrow"><span>Now</span>${stars(c.sc)}<em class="num">${c.sc.toFixed(1)}</em></div>
+          <div class="starrow"><span>Pot</span>${stars(c.sp, 'pot')}<em class="num">${c.sp.toFixed(1)}</em></div>
+          <div class="starrow"><span>Avg</span><span class="num" style="color:var(--text)">${c.rating == null ? 'no rating yet' : c.rating.toFixed(2) + ' rating'}</span><em class="num" style="color:var(--muted);font-weight:400">${c.mins}'</em></div></div>`;
+      ringV = c.prod == null ? 0 : c.prod; ringTitle = 'Production score (0-100, percentile vs position peers, shrunk for small samples)';
+      foot = `${c.has ? statTags(s, c) : '<span class="tag warn">No stats yet — stars only</span>'}${c.has && c.mins < 900 ? '<span class="tag warn">Small sample</span>' : ''}${alsoTag}<span class="tag">Score ${sc}</span>`;
+      expand = `<div class="stgrid">${s.metrics.map((m, k) => { const [v, pc] = c.stats[k] || [null, null], pv = (p.stats[k] || [null])[0];
+        return `<div class="st"><span class="nm">${esc(m.label)}</span><span class="vals"><b>${fmtStat(m, v)}</b> <span style="color:var(--muted)">vs ${fmtStat(m, pv)}</span></span>
+          <div class="pbar"><i style="width:${pc ?? 0}%;background:${pc == null ? 'var(--line)' : pc >= 70 ? 'var(--green)' : pc >= 40 ? 'var(--accent)' : 'var(--amber)'}"></i></div></div>`; }).join('')}</div>
+        <div class="row" style="margin-top:12px"><span class="tag">Bars = percentile among ${esc(s.group)} players with enough minutes · "vs" = ${esc(lastName(p.name))}</span></div>`;
+    } else {
+      const ipC = fitOf(c.attrs, s.attr_names, roles.ip, 'ip'), oopC = fitOf(c.attrs, s.attr_names, roles.oop, 'oop');
+      const ipP = fitOf(p.attrs, s.attr_names, roles.ip, 'ip'), oopP = fitOf(p.attrs, s.attr_names, roles.oop, 'oop');
+      const strengths = [], gaps = [];
+      s.attr_names.forEach((a, k) => { const d = c.attrs[k] - p.attrs[k]; if (d >= 2) strengths.push([a, d, c.attrs[k]]); if (d <= -2) gaps.push([a, d, c.attrs[k]]); });
+      strengths.sort((a, b) => b[1] - a[1]); gaps.sort((a, b) => a[1] - b[1]);
+      mid = `<div class="bars ratings">
+          <div class="bar"><span>CA</span><div class="track"><div class="fill" style="width:${c.ca / 2}%"></div></div><em class="num">${c.ca}${delta(c.ca, p.ca)}</em></div>
+          <div class="bar"><span>PA</span><div class="track"><div class="fill pa" style="width:${c.pa / 2}%"></div></div><em class="num">${c.pa}${delta(c.pa, p.pa)}</em></div></div>`;
+      const comb = (1 - S.oop / 100) * ipC + (S.oop / 100) * oopC;
+      ringV = c.match; ringTitle = 'Profile similarity to ' + p.name;
+      foot = `<span class="tag vio" title="${esc(roles.ip)}">IP ${Math.round(ipC)}${delta(ipC, ipP)}</span><span class="tag vio" title="${esc(roles.oop)}">OOP ${Math.round(oopC)}${delta(oopC, oopP)}</span>
+        ${strengths.slice(0, 3).map(x => `<span class="tag good">${nice(x[0])} ${x[2]} (+${x[1]})</span>`).join('')}${gaps.slice(0, 2).map(x => `<span class="tag bad">${nice(x[0])} ${x[2]} (${x[1]})</span>`).join('')}
+        ${alsoTag}<span class="tag">Score ${sc}</span>`;
+      expand = `<div class="agrid">${s.attr_names.map((a, k) => { const d = c.attrs[k] - p.attrs[k];
+        return `<div class="a"><span>${nice(a)}</span><b class="num">${p.attrs[k]}</b><i class="arrow">→</i><b class="num">${c.attrs[k]}</b><div class="dd num ${d > 0 ? 'd-up' : d < 0 ? 'd-dn' : 'd-eq'}">${d > 0 ? '+' + d : d < 0 ? d : '·'}</div></div>`; }).join('')}</div>
+        <div class="row" style="margin-top:12px"><span class="tag">Left → right: ${esc(lastName(p.name))} → ${esc(lastName(c.name))} · role fit uses ${esc(roles.ip)} (IP) and ${esc(roles.oop)} (OOP)</span></div>`;
+    }
+    const color = ringV >= 70 ? 'var(--green)' : ringV >= 50 ? 'var(--accent)' : 'var(--amber)';
+    h += `<div class="card cand ${i === 0 ? 'r1' : ''} ${open.has(c.uid) ? 'open' : ''}" data-uid="${c.uid}">
+      <button class="cand-main"><div class="rank">${i + 1}</div>
+        <div><div class="pname">${esc(c.name)}</div><div class="pmeta">${esc(c.club)} · ${c.age}y · ${esc(c.pos)}</div>
+          <div class="row">${natTag(c)}${contractTag(c)}<span class="tag">${esc(c.foot)}</span></div></div>
+        ${mid}${moneyCol}
+        <div class="ring" style="--p:${Math.min(100, ringV)};--c:${color}" title="${esc(ringTitle)}"><i class="num">${isMoney() ? (c.prod == null ? '—' : Math.round(c.prod)) : Math.round(c.match)}</i></div></button>
+      <div class="cand-foot">${foot}</div>
+      <div class="expand">${expand}</div></div>`;
+  });
+  $('#detail').innerHTML = h;
+  document.querySelectorAll('.cand-main').forEach(b => b.onclick = () => {
+    const card = b.closest('.cand'), uid = +card.dataset.uid; open.has(uid) ? open.delete(uid) : open.add(uid); card.classList.toggle('open'); });
+  document.querySelectorAll('select[data-phase]').forEach(sel => sel.onchange = e => {
+    const i = +sel.dataset.slot; S.roles[i] = Object.assign({}, S.roles[i] || {}, {[sel.dataset.phase]: sel.value}); renderPitch(); renderDetail(); save(); });
+}
+function renderBench() {
+  $('#bench').innerHTML = `<table><thead><tr><th>Player</th><th>Pos</th><th>Age</th><th>Nat</th><th>Stars</th><th>CA</th><th>PA</th><th>Value</th><th>Wage</th><th>Contract</th><th>Status</th></tr></thead><tbody>` +
+    D.bench.map(p => `<tr><td><b>${esc(p.name)}</b></td><td>${esc(p.pos)}</td><td class="num">${p.age}</td><td>${esc(p.nat)}</td><td>${stars(p.sc)} <span class="num" style="color:var(--muted)">/ ${p.sp.toFixed(1)}</span></td><td class="num">${p.ca}</td><td class="num">${p.pa}</td><td class="num">${money(p.value)}</td><td class="num">${wage(p.wage)}</td><td>${p.end ? p.end.slice(0, 7) : '—'}</td><td>${esc(p.status || '')}</td></tr>`).join('') + `</tbody></table>`;
+}
+function rerender() { renderFilters(); renderPitch(); renderDetail(); save(); }
+
+[['age', 'age', Number], ['val', 'val', Number], ['pa', 'pa', Number], ['psr', 'psr', Number], ['oop', 'oop', Number], ['sort', 'sort', String]]
+  .forEach(([id, k, f]) => $('#' + id).oninput = e => { S[k] = f(e.target.value); rerender(); });
+[['bonus', 'bonus'], ['strict', 'strict'], ['afford', 'afford'], ['expiring', 'expiring'], ['onlystats', 'onlystats']]
+  .forEach(([id, k]) => $('#' + id).onchange = e => { S[k] = e.target.checked; rerender(); });
+document.querySelectorAll('#seg button').forEach(b => b.onclick = () => { S.mode = b.dataset.m; rerender(); });
+$('#reset').onclick = () => { const m = S.mode; S = JSON.parse(JSON.stringify(DEFAULTS)); S.mode = m; open.clear(); rerender(); };
+$('#theme').onclick = () => { const r = document.documentElement; const dark = getComputedStyle(r).getPropertyValue('--bg').trim() === '#0a0f1f'; r.dataset.theme = dark ? 'light' : 'dark'; };
+document.addEventListener('keydown', e => { if (['INPUT', 'SELECT'].includes(e.target.tagName)) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight') S.slot = Math.min(D.slots.length - 1, S.slot + 1);
+  else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') S.slot = Math.max(0, S.slot - 1); else return;
+  renderPitch(); renderDetail(); });
+renderTop(); renderBench(); rerender();
+</script>
+</body>
+</html>
