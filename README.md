@@ -58,3 +58,7 @@ python app/fm27_recruit.py squad --club "FC Porto"
 - fmsave reports newer FM27 builds as "unverified (partial coverage)". Attributes, age, contract and value were checked against the in-game profile for one player (36/36 attributes matched); wages can differ slightly from the in-game screen.
 - Nation ids are mapped for about 70 countries (`NATIONS` in `app/fm27_report.py`); others show a dash.
 - Claude Code skill: `/fm27-recruit`.
+
+## License
+
+Copyright (c) 2026 André Santos. All rights reserved. The code is public for viewing only; see [LICENSE](LICENSE). Contact me for permission to use it.
