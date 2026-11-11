@@ -92,8 +92,22 @@ def main():
     ap.add_argument("--open", action="store_true"); ap.add_argument("--force", action="store_true")
     ap.add_argument("--mode", choices=["attributes", "moneyball"], default="attributes")
     ap.add_argument("--save")
+    ap.add_argument("--serve", action="store_true", help="serve the board locally with an Update button (use start.bat)")
+    ap.add_argument("--port", type=int, default=8802)
     a = ap.parse_args()
+    if a.serve:
+        import copy
+        b = copy.copy(a); b.open = False; b.serve = False
+        _run(b)                                   # make sure a board exists / is current
+        sys.path.insert(0, APP)
+        import server
+        cmd = [sys.executable, os.path.abspath(__file__), "--mode", a.mode] + (["--save", a.save] if a.save else [])
+        server.serve(ROOT, HTML, cmd, a.port, a.open)
+        return
+    _run(a)
 
+
+def _run(a):
     state = load_state()
     first_run = not state.get("setup_done") or not os.path.isdir(APP) or not os.path.exists(os.path.join(ROOT, "prefs.json"))
     if first_run:

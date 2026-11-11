@@ -44,9 +44,11 @@ def export(save=None):
     save = save or latest_save()
     print(f"Exporting {os.path.basename(save)} ...")
     r = subprocess.run([sys.executable, "-m", "fmsave", "export", save, "players", "--all",
-                        "--format", "csv", "-o", CACHE], capture_output=True, text=True)
+                        "--format", "csv", "-o", CACHE], capture_output=True, text=True, encoding="utf-8", errors="replace")
     if r.returncode:
-        sys.exit(r.stderr[-1500:])
+        err = r.stderr.strip().splitlines()
+        sys.exit("Could not read the save: " + (err[-1] if err else "unknown error") +
+                 " (If FM is saving or open, wait a moment and press Update again.)")
     df = pd.read_csv(CACHE, low_memory=False)
     print(f"{len(df):,} players -> {CACHE}")
     info = subprocess.run([sys.executable, "-m", "fmsave", "info", save], capture_output=True, text=True).stdout

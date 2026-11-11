@@ -59,6 +59,10 @@ python app/fm27_recruit.py squad --club "FC Porto"
 - Nation ids are mapped for about 70 countries (`NATIONS` in `app/fm27_report.py`); others show a dash.
 - Claude Code skill: `/fm27-recruit`.
 
+## One-click mode (Update button)
+
+Double-click `start.bat` (or run `python fm27.py --serve --open`). It serves the page on localhost and shows an **Update data** button in the corner: one click runs the same update flow and reloads the page, so you never need an editor or terminal. The server binds to 127.0.0.1 only and the page works read-only if opened directly as a file (the button only appears when served).
+
 ## License
 
 Copyright (c) 2026 André Santos. All rights reserved. The code is public for viewing only; see [LICENSE](LICENSE). Contact me for permission to use it.
